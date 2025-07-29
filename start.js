@@ -12,9 +12,10 @@ module.exports = async (kernel) => {
           path: "app",
           env: {
             GRADIO_SERVER_PORT: port.toString(),
-            GRADIO_SERVER_NAME: "0.0.0.0"
+            GRADIO_SERVER_NAME: "0.0.0.0",
+            CUDA_VISIBLE_DEVICES: "0"
           },
-          message: `python smollm3_gradio.py --port ${port} --host 0.0.0.0`,
+          message: `python app.py --port ${port} --host 0.0.0.0`,
           on: [{
             // Wait for Gradio server to start - look for the running message
             event: "/Running on local URL:.*http:\\/\\/[0-9.:]+:[0-9]+/",
@@ -32,13 +33,13 @@ module.exports = async (kernel) => {
             event: `/http:\\/\\/localhost:${port}/`,
             done: true
           }, {
-            // SmolLM3 specific startup patterns
-            event: "/Starting Gradio interface/",
+            // SmolLM3 specific startup pattern
+            event: "/SmolLM3.*ready/i",
             done: true
           }, {
-            // Model loading completion
+            // Model loading completion pattern
             event: "/Model loaded successfully/",
-            done: false
+            done: true
           }]
         }
       },

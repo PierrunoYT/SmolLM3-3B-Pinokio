@@ -3,7 +3,7 @@ const path = require('path')
 module.exports = {
   version: "1.0.0",
   title: "SmolLM3-3B Chatbot",
-  description: "Local AI chatbot using SmolLM3-3B model with Gradio interface. Supports both CPU and GPU inference with extended thinking mode.",
+  description: "Local SmolLM3-3B model with Gradio interface for conversational AI, featuring extended thinking mode and GPU acceleration",
   icon: "icon.png",
   menu: async (kernel, info) => {
     let installed = info.exists("app/env")
@@ -18,7 +18,7 @@ module.exports = {
     if (running.install) {
       return [{
         default: true,
-        icon: "fa-solid fa-plug",
+        icon: "fa-solid fa-download",
         text: "Installing SmolLM3-3B...",
         href: "install.js",
       }]
@@ -28,8 +28,8 @@ module.exports = {
         if (local && local.url) {
           return [{
             default: true,
-            icon: "fa-solid fa-robot",
-            text: "Open SmolLM3 Chatbot",
+            icon: "fa-solid fa-comments",
+            text: "Open SmolLM3 Chat",
             href: local.url,
           }, {
             icon: 'fa-solid fa-terminal',
@@ -45,7 +45,7 @@ module.exports = {
           return [{
             default: true,
             icon: "fa-solid fa-spinner fa-spin",
-            text: "Starting...",
+            text: "Starting SmolLM3...",
             href: "start.js",
           }]
         }
@@ -54,7 +54,7 @@ module.exports = {
         return [{
           default: true,
           icon: "fa-solid fa-play",
-          text: "Start SmolLM3 Chatbot",
+          text: "Start SmolLM3-3B",
           href: "start.js"
         }, {
           icon: "fa-solid fa-sync",

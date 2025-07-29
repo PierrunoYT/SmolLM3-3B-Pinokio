@@ -25,7 +25,10 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 
 1. Install [Pinokio](https://pinokio.computer/)
 2. Open Pinokio and navigate to "Discover"
-3. Search for "SmolLM3-3B" or paste this repository URL
+3. Search for "SmolLM3-3B" or paste this repository URL:
+   ```
+   https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+   ```
 4. Click "Install" and wait for the installation to complete
 5. Click "Start" to launch the chatbot
 6. Open the web interface when it becomes available
@@ -34,16 +37,16 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/SmolLM3-3B.git
-   cd SmolLM3-3B
+   git clone https://github.com/PierrunoYT/SmolLM3-3B-Pinokio.git
+   cd SmolLM3-3B-Pinokio
    ```
 
 2. Install Pinokio and run the installation script through the Pinokio interface
 
 ## 🎯 Usage
 
-1. **Start the Application**: Click "Start SmolLM3 Chatbot" in Pinokio
-2. **Open Web Interface**: Click "Open SmolLM3 Chatbot" when available
+1. **Start the Application**: Click "Start SmolLM3-3B" in Pinokio
+2. **Open Web Interface**: Click "Open SmolLM3 Chat" when available
 3. **Chat**: Type your message and press Send
 4. **Advanced Options**:
    - Toggle "Extended Thinking Mode" for reasoning traces
@@ -54,7 +57,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 ## 🏗️ Project Structure
 
 ```
-SmolLM3-3B/
+SmolLM3-3B-Pinokio/
 ├── pinokio.js              # Main Pinokio configuration
 ├── install.js              # Installation workflow
 ├── start.js                # Application startup
@@ -67,7 +70,7 @@ SmolLM3-3B/
 ├── .gitignore              # Git ignore rules
 └── app/                    # Created during installation
     ├── env/                # Python virtual environment
-    ├── smollm3_gradio.py   # Gradio app (copied from root)
+    ├── app.py              # Main Gradio application
     └── requirements.txt    # Python dependencies
 ```
 
@@ -84,13 +87,13 @@ SmolLM3-3B/
 - PyTorch 2.7.0+ with CUDA 12.8 support
 - Transformers 4.40.0+
 - Gradio 4.0.0+
-- Accelerate, SentencePiece, Protobuf
+- Accelerate, Bitsandbytes
 
 ### GPU Support Matrix
 
 | Platform | NVIDIA | AMD | CPU |
 |----------|--------|-----|-----|
-| Windows | CUDA 12.8 + XFormers | DirectML | CPU-only |
+| Windows | CUDA 12.8 + XFormers + Triton | DirectML | CPU-only |
 | Linux | CUDA 12.8 + XFormers + SageAttention | ROCm 6.2.4 | CPU-only |
 | macOS | N/A | N/A | CPU + Metal |
 

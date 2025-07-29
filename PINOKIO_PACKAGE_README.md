@@ -6,15 +6,15 @@ This directory contains a complete Pinokio installer package for SmolLM3-3B Chat
 
 ### Core Pinokio Files
 - **`pinokio.js`** - Main configuration and dynamic menu system
-- **`install.js`** - Complete installation workflow
+- **`install.js`** - Complete installation workflow that clones from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
 - **`start.js`** - Application startup script with port management
-- **`torch.js`** - Cross-platform PyTorch installation
+- **`torch.js`** - Cross-platform PyTorch installation with latest optimizations
 - **`update.js`** - Update workflow for package and dependencies
 - **`reset.js`** - Clean removal and reset functionality
 - **`icon.png`** - Project icon (512x512px robot/AI design)
 
 ### Additional Files
-- **`smollm3_gradio.py`** - Complete Gradio application
+- **`smollm3_gradio.py`** - Complete Gradio application (reference copy)
 - **`ICON_INSTRUCTIONS.md`** - Instructions for customizing the icon
 - **`PINOKIO_PACKAGE_README.md`** - This documentation file
 
@@ -22,19 +22,19 @@ This directory contains a complete Pinokio installer package for SmolLM3-3B Chat
 
 The Pinokio installer will:
 
-1. **Create App Directory**: Sets up isolated `app/` directory
-2. **Install PyTorch**: Platform and GPU-specific PyTorch installation
-3. **Install Dependencies**: Installs transformers, gradio, and supporting packages
-4. **Copy Gradio App**: Copies the SmolLM3 Gradio interface to app directory
-5. **Setup Environment**: Creates virtual environment with all dependencies
-6. **Model Preparation**: Prepares for automatic model download on first use
+1. **Clone Repository**: Downloads the SmolLM3-3B-Pinokio repository from GitHub
+2. **Install PyTorch**: Platform and GPU-specific PyTorch 2.7.0 installation with CUDA 12.8
+3. **Install Dependencies**: Installs transformers, gradio, accelerate, and supporting packages
+4. **Setup Environment**: Creates virtual environment with all dependencies
+5. **Model Preparation**: Prepares for automatic SmolLM3-3B model download on first use
+6. **Verification**: Tests all components for proper installation
 
 ## Features
 
 ### Smart Menu System
 - **Dynamic State Detection**: Shows appropriate options based on installation status
 - **Running Process Awareness**: Detects if installation/startup is in progress
-- **Direct Web Access**: "Open SmolLM3 Chatbot" button when application is running
+- **Direct Web Access**: "Open SmolLM3 Chat" button when application is running
 - **Terminal Access**: View logs and output during operation
 
 ### Cross-Platform Support
@@ -43,31 +43,34 @@ The Pinokio installer will:
 - **Linux**: Ubuntu/Debian and other distributions with CUDA/ROCm support
 
 ### GPU Optimization
-- **NVIDIA CUDA**: Automatic detection and installation of CUDA 12.8
-- **AMD Support**: DirectML on Windows, ROCm on Linux
+- **NVIDIA CUDA**: Automatic detection and installation of CUDA 12.8 with XFormers
+- **AMD Support**: DirectML on Windows, ROCm 6.2.4 on Linux
 - **CPU Fallback**: Graceful fallback to CPU-only mode with optimizations
 - **Memory Management**: Automatic FP16/FP32 precision selection
+- **Advanced Optimizations**: Optional Triton (Windows) and SageAttention support
 
 ### AI Features
-- **SmolLM3-3B Model**: Advanced 3B parameter language model
+- **SmolLM3-3B Model**: Advanced 3B parameter language model from HuggingFace
 - **Extended Thinking Mode**: Enable reasoning traces for complex queries
 - **Parameter Control**: Adjustable temperature, top-p, and token limits
 - **Real-time Chat**: Responsive conversational interface
+- **Context Awareness**: Up to 8192 token context length
 
 ### Robust Installation
 - **Error Handling**: Graceful handling of installation failures
 - **Dependency Management**: Proper virtual environment isolation
 - **Update Support**: Easy updates without full reinstallation
 - **Clean Reset**: Complete removal for fresh starts
+- **UV Package Manager**: Lightning-fast dependency installation
 
 ## Usage Instructions
 
 ### For End Users
 1. Copy this entire directory to your Pinokio packages folder
 2. Launch Pinokio and find "SmolLM3-3B Chatbot" in your packages
-3. Click "Install" to begin the installation process
-4. After installation, click "Start" to launch the application
-5. Click "Open SmolLM3 Chatbot" to access the Gradio interface
+3. Click "Install SmolLM3-3B" to begin the installation process
+4. After installation, click "Start SmolLM3-3B" to launch the application
+5. Click "Open SmolLM3 Chat" to access the Gradio interface
 
 ### For Developers
 1. Ensure all source files are in the same directory as the Pinokio scripts
@@ -136,7 +139,7 @@ The application uses the SmolLM3-3B model:
 
 | Platform | NVIDIA | AMD | CPU |
 |----------|--------|-----|-----|
-| Windows | CUDA 12.8 + XFormers | DirectML | CPU-only |
+| Windows | CUDA 12.8 + XFormers + Triton | DirectML | CPU-only |
 | Linux | CUDA 12.8 + XFormers + SageAttention | ROCm 6.2.4 | CPU-only |
 | macOS | N/A | N/A | CPU + Metal |
 
@@ -147,6 +150,7 @@ The application uses the SmolLM3-3B model:
   - Cross-platform PyTorch support with latest optimizations
   - Dynamic menu system
   - Professional Gradio interface with extended thinking mode
+  - Repository-based installation from GitHub
 
 ## Support
 
@@ -155,6 +159,7 @@ For issues related to:
 - **SmolLM3 Model**: Visit [HuggingFace model page](https://huggingface.co/HuggingFaceTB/SmolLM3-3B)
 - **Installation Problems**: Use the Reset option and try reinstalling
 - **Performance Issues**: Check system requirements and GPU compatibility
+- **Repository Issues**: Visit [GitHub repository](https://github.com/PierrunoYT/SmolLM3-3B-Pinokio)
 
 ## License
 

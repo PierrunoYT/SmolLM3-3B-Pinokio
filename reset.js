@@ -22,7 +22,7 @@ module.exports = {
     {
       method: "log",
       params: {
-        text: "🗑️ Higgs Audio V2 Enhanced has been completely removed. You can reinstall it using the Install button."
+        text: "🗑️ SmolLM3-3B has been completely removed. You can reinstall it using the Install button."
       }
     }
   ]
