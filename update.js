@@ -13,17 +13,27 @@ module.exports = {
     },
     
     // Update core dependencies (using UV for speed)
+    // Note: Update transformers with --no-deps to avoid overriding PyTorch CUDA installation
     {
       method: "shell.run",
       params: {
         venv: "env",
         path: "app",
         message: [
-          "uv pip install --upgrade transformers",
+          "uv pip install --upgrade transformers --no-deps",
           "uv pip install --upgrade gradio",
           "uv pip install --upgrade accelerate",
           "uv pip install --upgrade sentencepiece",
-          "uv pip install --upgrade protobuf"
+          "uv pip install --upgrade protobuf",
+          "uv pip install --upgrade tokenizers",
+          "uv pip install --upgrade safetensors",
+          "uv pip install --upgrade huggingface-hub",
+          "uv pip install --upgrade numpy",
+          "uv pip install --upgrade packaging",
+          "uv pip install --upgrade pyyaml",
+          "uv pip install --upgrade regex",
+          "uv pip install --upgrade requests",
+          "uv pip install --upgrade tqdm"
         ]
       }
     },

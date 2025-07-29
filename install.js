@@ -21,17 +21,27 @@ module.exports = {
     },
     
     // Install core dependencies for SmolLM3 (using UV for speed)
+    // Note: Install transformers with --no-deps to avoid overriding PyTorch CUDA installation
     {
       method: "shell.run",
       params: {
         venv: "env",
         path: "app",
         message: [
-          "uv pip install transformers>=4.40.0",
+          "uv pip install transformers>=4.40.0 --no-deps",
           "uv pip install gradio>=4.0.0",
           "uv pip install accelerate",
           "uv pip install sentencepiece",
-          "uv pip install protobuf"
+          "uv pip install protobuf",
+          "uv pip install tokenizers",
+          "uv pip install safetensors",
+          "uv pip install huggingface-hub",
+          "uv pip install numpy",
+          "uv pip install packaging",
+          "uv pip install pyyaml",
+          "uv pip install regex",
+          "uv pip install requests",
+          "uv pip install tqdm"
         ]
       }
     },
