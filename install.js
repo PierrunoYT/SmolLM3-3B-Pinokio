@@ -62,26 +62,6 @@ module.exports = {
       }
     },
     
-    // Verify PyTorch installation and CUDA availability
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        path: "app",
-        message: "python -c \"import torch; print(f'PyTorch {torch.__version__} CUDA: {torch.cuda.is_available()}')\""
-      }
-    },
-    
-    
-    // Final verification of all components
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        path: "app",
-        message: "python -c \"import torch, transformers, gradio, accelerate; print('All core components verified successfully')\""
-      }
-    },
     
     // Create a setup completion marker
     {
