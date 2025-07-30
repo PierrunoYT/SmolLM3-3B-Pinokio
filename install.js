@@ -22,7 +22,7 @@ module.exports = {
     {
       method: "shell.run",
       params: {
-        message: "git clone https://github.com/PierrunoYT/SmolLM3-3B-Pinokio.git app"
+        message: "git clone https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio.git app"
       }
     },
     

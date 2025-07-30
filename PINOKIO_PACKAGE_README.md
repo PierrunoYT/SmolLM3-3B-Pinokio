@@ -6,7 +6,7 @@ This directory contains a complete Pinokio installer package for SmolLM3-3B Chat
 
 ### Core Pinokio Files
 - **`pinokio.js`** - Main configuration and dynamic menu system
-- **`install.js`** - Complete installation workflow that clones from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+- **`install.js`** - Complete installation workflow that clones from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio
 - **`start.js`** - Application startup script with port management
 - **`torch.js`** - Cross-platform PyTorch installation with latest optimizations
 - **`update.js`** - Update workflow for package and dependencies
@@ -159,7 +159,7 @@ For issues related to:
 - **SmolLM3 Model**: Visit [HuggingFace model page](https://huggingface.co/HuggingFaceTB/SmolLM3-3B)
 - **Installation Problems**: Use the Reset option and try reinstalling
 - **Performance Issues**: Check system requirements and GPU compatibility
-- **Repository Issues**: Visit [GitHub repository](https://github.com/PierrunoYT/SmolLM3-3B-Pinokio)
+- **Repository Issues**: Visit [GitHub repository](https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio)
 
 ## License
 

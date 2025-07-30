@@ -27,7 +27,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 2. Open Pinokio and navigate to "Discover"
 3. Search for "SmolLM3-3B" or paste this repository URL:
    ```
-   https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+   https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio
    ```
 4. Click "Install" and wait for the installation to complete
 5. Click "Start" to launch the chatbot
@@ -37,7 +37,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/PierrunoYT/SmolLM3-3B-Pinokio.git
+   git clone https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio.git
    cd SmolLM3-3B-Pinokio
    ```
 

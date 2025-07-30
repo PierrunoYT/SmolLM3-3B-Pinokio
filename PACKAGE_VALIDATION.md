@@ -19,7 +19,7 @@
 ## ✅ Package Features Implemented
 
 ### Installation Process
-- [x] Repository cloning from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+- [x] Repository cloning from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio
 - [x] App directory creation with cloned repository
 - [x] PyTorch 2.7.0 installation with GPU detection and CUDA 12.8
 - [x] SmolLM3 dependencies installation (transformers>=4.40.0, gradio>=4.0.0, etc.)
@@ -131,7 +131,7 @@ SmolLM3-3B-Pinokio/
 - `PINOKIO_SCRIPT_GUIDE.md` - Development guide
 
 ### Repository Integration
-- [x] Clones from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+- [x] Clones from https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio
 - [x] Uses repository's requirements.txt
 - [x] Launches repository's app.py
 - [x] Updates via git pull

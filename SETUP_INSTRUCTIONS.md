@@ -30,7 +30,7 @@ The installation process:
 
 The package now clones from:
 ```
-https://github.com/PierrunoYT/SmolLM3-3B-Pinokio
+https://github.com/PierrunoYT/SmolLM3-3B-Pinokio-Gradio
 ```
 
 This ensures:
