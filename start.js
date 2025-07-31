@@ -40,6 +40,22 @@ module.exports = async (kernel) => {
             // Model loading completion pattern
             event: "/Model loaded successfully/",
             done: true
+          }, {
+            // HuggingFace model loading pattern
+            event: "/Loading checkpoint shards/",
+            done: true
+          }, {
+            // Transformers model initialization
+            event: "/AutoModelForCausalLM.*loaded/",
+            done: true
+          }, {
+            // Server ready pattern
+            event: "/Server is ready/",
+            done: true
+          }, {
+            // Application startup complete
+            event: "/Application started/",
+            done: true
           }]
         }
       },
