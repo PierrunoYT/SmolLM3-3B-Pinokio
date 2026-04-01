@@ -6,14 +6,11 @@ module.exports = {
   icon: "icon.jpg",
   menu: async (kernel, info) => {
     let installed = info.exists("app/env")
-    let running = {
-      install: info.running("install.js"),
-      start: info.running("start.js"),
-      update: info.running("update.js"),
-      reset: info.running("reset.js"),
-      link: info.running("link.js")
-    }
-    if (running.install) {
+    let installing = info.running("install.js")
+    let running = info.running("start.js")
+    let updating = info.running("update.js")
+    let resetting = info.running("reset.js")
+    if (installing) {
       return [{
         default: true,
         icon: "fa-solid fa-plug",
@@ -21,8 +18,8 @@ module.exports = {
         href: "install.js",
       }]
     } else if (installed) {
-      if (running.start) {
-        let local = info.local("start.js")
+      if (running) {
+        let local = kernel.memory.local[path.resolve(__dirname, "start.js")]
         if (local && local.url) {
           return [{
             default: true,
@@ -42,26 +39,19 @@ module.exports = {
             href: "start.js",
           }]
         }
-      } else if (running.update) {
+      } else if (updating) {
         return [{
           default: true,
-          icon: 'fa-solid fa-terminal',
+          icon: 'fa-solid fa-arrows-rotate',
           text: "Updating",
           href: "update.js",
         }]
-      } else if (running.reset) {
+      } else if (resetting) {
         return [{
           default: true,
           icon: 'fa-solid fa-terminal',
           text: "Resetting",
           href: "reset.js",
-        }]
-      } else if (running.link) {
-        return [{
-          default: true,
-          icon: 'fa-solid fa-terminal',
-          text: "Deduplicating",
-          href: "link.js",
         }]
       } else {
         return [{
@@ -70,7 +60,7 @@ module.exports = {
           text: "Start",
           href: "start.js",
         }, {
-          icon: "fa-solid fa-plug",
+          icon: "fa-solid fa-arrows-rotate",
           text: "Update",
           href: "update.js",
         }, {
@@ -86,7 +76,6 @@ module.exports = {
           text: "<div><strong>Reset</strong><div>Revert to pre-install state</div></div>",
           href: "reset.js",
           confirm: "Are you sure you wish to reset the app?"
-
         }]
       }
     } else {
