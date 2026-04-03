@@ -5,7 +5,6 @@ module.exports = {
       method: "shell.run",
       params: {
         venv: "env",
-        path: "app",
         env: {
           CUDA_VISIBLE_DEVICES: "0"
         },
