@@ -78,7 +78,3 @@ Thumbs.db
 *.temp
 app/*.tmp
 app/*.temp
-
-# Requirements (generated during install)
-app/requirements.txt
-app/README.md

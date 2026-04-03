@@ -1,4 +1,3 @@
-const path = require('path')
 module.exports = {
   version: "1.0.0",
   title: "SmolLM3-3B Chatbot",
@@ -19,7 +18,7 @@ module.exports = {
       }]
     } else if (installed) {
       if (running) {
-        let local = kernel.memory.local[path.resolve(__dirname, "start.js")]
+        let local = info.local("start.js")
         if (local && local.url) {
           return [{
             default: true,

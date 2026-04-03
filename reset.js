@@ -7,9 +7,10 @@ module.exports = {
       }
     },
     {
+      when: "{{exists('app/env')}}",
       method: "fs.rm",
       params: {
-        path: "app"
+        path: "app/env"
       }
     }
   ]

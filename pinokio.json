@@ -1,0 +1,5 @@
+{
+  "title": "SmolLM3-3B Chatbot",
+  "description": "Advanced 3B parameter language model with Gradio web interface, GPU acceleration, and complete privacy",
+  "icon": "icon.jpg"
+}
