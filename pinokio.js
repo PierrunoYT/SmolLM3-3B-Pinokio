@@ -1,8 +1,5 @@
 module.exports = {
-  version: "1.0.0",
-  title: "SmolLM3-3B Chatbot",
-  description: "Advanced 3B parameter language model with Gradio web interface, GPU acceleration, and complete privacy",
-  icon: "icon.jpg",
+  version: "5.0",
   menu: async (kernel, info) => {
     let installed = info.exists("env") || info.exists("app/env")
     let installing = info.running("install.js")
