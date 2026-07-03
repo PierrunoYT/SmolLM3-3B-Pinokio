@@ -1,3 +1,4 @@
+import inspect
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import gradio as gr
@@ -39,7 +40,16 @@ def format_prompt(prompt, enable_thinking=False):
             "add_generation_prompt": True,
         }
 
-        if "enable_thinking" in tokenizer.apply_chat_template.__code__.co_varnames:
+        try:
+            parameters = inspect.signature(tokenizer.apply_chat_template).parameters
+            accepts_enable_thinking = "enable_thinking" in parameters or any(
+                param.kind == inspect.Parameter.VAR_KEYWORD
+                for param in parameters.values()
+            )
+        except (TypeError, ValueError):
+            accepts_enable_thinking = False
+
+        if accepts_enable_thinking:
             template_kwargs["enable_thinking"] = enable_thinking
 
         return tokenizer.apply_chat_template(messages, **template_kwargs)

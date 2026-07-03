@@ -24,12 +24,12 @@ Launcher scripts live in the project root: `install.js`, `start.js`, `update.js`
 
 ### Python
 
-Run the app directly after activating the same venv Pinokio uses (`env` at project root):
+Run the app directly after activating the same venv Pinokio uses (`env` inside `app/`):
 
 ```bash
 # Windows (example)
-env\Scripts\activate
 cd app
+env\Scripts\activate
 python app.py --host 127.0.0.1 --port 7860
 ```
 
@@ -47,5 +47,5 @@ For generation, prefer the **Gradio Client** library or the interactive UI; exac
 
 ## Layout
 
-- `app/` — application code (`app.py`, `requirements.txt`).
-- Root — Pinokio launcher scripts and shared `env/` virtual environment.
+- `app/` — application code (`app.py`, `requirements.txt`) and the `env/` virtual environment used to run it.
+- Root — Pinokio launcher scripts (`install.js`, `start.js`, `update.js`, `reset.js`, `link.js`, `torch.js`, `pinokio.js`).

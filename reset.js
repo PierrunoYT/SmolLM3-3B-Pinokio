@@ -1,6 +1,7 @@
 module.exports = {
   run: [
     {
+      when: "{{exists('env')}}",
       method: "fs.rm",
       params: {
         path: "env"
