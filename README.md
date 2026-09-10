@@ -8,6 +8,14 @@ Local chat UI for [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B) 
 - Starts a Gradio server that prints a local URL; Pinokio captures that URL for an **Open Web UI** action.
 - Supports optional **Save Disk Space** (`link.js`) to deduplicate the virtual environment.
 
+## Requirements
+
+- Pinokio with the `ai` bundle (installed automatically by `install.js`).
+- `transformers` 4.53.0 or newer — the SmolLM3 architecture is not available in
+  older releases.
+- Roughly 6 GB of free disk space for the model weights, downloaded from the
+  Hugging Face Hub on first run.
+
 ## How to use (Pinokio)
 
 1. Open this project in Pinokio.
@@ -32,6 +40,10 @@ cd app
 env\Scripts\activate
 python app.py --host 127.0.0.1 --port 7860
 ```
+
+Available flags: `--host`, `--port`, and `--share` (creates a public Gradio
+link). The model is loaded only after the arguments are parsed, so
+`python app.py --help` returns immediately without downloading weights.
 
 ### cURL
 

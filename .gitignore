@@ -78,3 +78,9 @@ Thumbs.db
 *.temp
 app/*.tmp
 app/*.temp
+
+# Local agent/tooling config
+.claude/
+.codex/
+.gemini/
+.open-edit/

@@ -2,7 +2,8 @@
 # Note: PyTorch installation is handled by torch.js script based on platform/GPU
 
 # Core ML dependencies
-transformers>=4.40.0
+# SmolLM3 architecture support requires transformers 4.53.0 or newer
+transformers>=4.53.0
 accelerate
 tokenizers
 safetensors
