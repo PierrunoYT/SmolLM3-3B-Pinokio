@@ -1,40 +1,74 @@
-import inspect
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import gradio as gr
 import argparse
+import inspect
 import sys
 
+import gradio as gr
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 # Model configuration
-model_name = "HuggingFaceTB/SmolLM3-3B"
-device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+MODEL_NAME = "HuggingFaceTB/SmolLM3-3B"
 
-print(f"Loading SmolLM3-3B model...")
-print(f"Device: {device}")
-print(f"PyTorch version: {torch.__version__}")
+# Populated by load_model(); kept at module scope so the Gradio callbacks can
+# reach them without threading state through every handler.
+tokenizer = None
+model = None
+device = "cpu"
 
-# Load tokenizer and model
-try:
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        torch_dtype=torch.float16 if device in {"cuda", "mps"} else torch.float32,
-        device_map="auto" if device in {"cuda", "mps"} else None,
-    )
-    if device == "cpu":
-        model = model.to(device)
 
-    print(f"Model loaded successfully on {device}")
-except Exception as e:
-    print(f"Error loading model: {e}")
-    sys.exit(1)
+def detect_device():
+    """Pick the best available torch device."""
+    if torch.cuda.is_available():
+        return "cuda"
+
+    mps = getattr(torch.backends, "mps", None)
+    if mps is not None and mps.is_available():
+        return "mps"
+
+    return "cpu"
+
+
+def load_model():
+    """Load the tokenizer and model onto the best available device."""
+    global tokenizer, model, device
+
+    device = detect_device()
+
+    print("Loading SmolLM3-3B model...")
+    print(f"Device: {device}")
+    print(f"PyTorch version: {torch.__version__}")
+
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            torch_dtype=torch.float16 if device in {"cuda", "mps"} else torch.float32,
+            # Only CUDA benefits from accelerate's sharding; mps/cpu are moved
+            # explicitly below so the weights never get offloaded to disk.
+            device_map="auto" if device == "cuda" else None,
+        )
+        if device != "cuda":
+            model = model.to(device)
+
+        model.eval()
+
+        print(f"Model loaded successfully on {device}")
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        sys.exit(1)
 
 
 def format_prompt(prompt, enable_thinking=False):
-    """Build chat prompt with tokenizer template when available."""
+    """Build a chat prompt with the tokenizer template when available.
+
+    Returns (text, used_template) so the caller knows whether the string
+    already carries the special tokens the template inserted.
+    """
     messages = [{"role": "user", "content": prompt}]
 
-    if hasattr(tokenizer, "apply_chat_template"):
+    if hasattr(tokenizer, "apply_chat_template") and getattr(
+        tokenizer, "chat_template", None
+    ):
         template_kwargs = {
             "tokenize": False,
             "add_generation_prompt": True,
@@ -52,19 +86,28 @@ def format_prompt(prompt, enable_thinking=False):
         if accepts_enable_thinking:
             template_kwargs["enable_thinking"] = enable_thinking
 
-        return tokenizer.apply_chat_template(messages, **template_kwargs)
+        return tokenizer.apply_chat_template(messages, **template_kwargs), True
 
-    return f"User: {prompt}\nAssistant:"
+    return f"User: {prompt}\nAssistant:", False
 
 
 def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0.95):
-    """Generate response using SmolLM3-3B."""
-    if not prompt.strip():
+    """Generate a response using SmolLM3-3B."""
+    if model is None or tokenizer is None:
+        return "Model is not loaded yet. Please restart the app."
+
+    if not prompt or not prompt.strip():
         return "Please enter a prompt."
 
     try:
-        text = format_prompt(prompt, enable_thinking=enable_thinking)
-        model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+        text, used_template = format_prompt(prompt, enable_thinking=enable_thinking)
+        # The chat template already emits BOS/special tokens; re-adding them
+        # here would prepend a duplicate BOS and skew generation.
+        model_inputs = tokenizer(
+            [text],
+            return_tensors="pt",
+            add_special_tokens=not used_template,
+        ).to(model.device)
 
         with torch.no_grad():
             generated_ids = model.generate(
@@ -74,19 +117,26 @@ def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0
                 top_p=float(top_p),
                 do_sample=True,
                 eos_token_id=tokenizer.eos_token_id,
-                pad_token_id=tokenizer.eos_token_id if tokenizer.eos_token_id is not None else 0,
+                pad_token_id=(
+                    tokenizer.pad_token_id
+                    if tokenizer.pad_token_id is not None
+                    else tokenizer.eos_token_id
+                ),
             )
 
-        output_ids = generated_ids[0][len(model_inputs.input_ids[0]) :]
+        output_ids = generated_ids[0][model_inputs.input_ids.shape[-1] :]
         response = tokenizer.decode(output_ids, skip_special_tokens=True)
-        return response
+        return response.strip()
 
+    except torch.cuda.OutOfMemoryError:
+        torch.cuda.empty_cache()
+        return "Out of GPU memory. Try lowering Max Tokens or restarting the app."
     except Exception as e:
-        return f"Error generating response: {str(e)}"
+        return f"Error generating response: {e}"
 
 
 def create_interface():
-    """Create and configure Gradio interface."""
+    """Create and configure the Gradio interface."""
     with gr.Blocks(title="SmolLM3-3B Chatbot", theme=gr.themes.Soft()) as iface:
         gr.Markdown(
             """
@@ -153,20 +203,14 @@ def create_interface():
             interactive=False,
         )
 
-        submit_btn.click(
-            fn=chat,
-            inputs=[prompt_input, thinking_mode, max_tokens, temperature, top_p],
-            outputs=response_output,
-        )
+        inputs = [prompt_input, thinking_mode, max_tokens, temperature, top_p]
 
-        prompt_input.submit(
-            fn=chat,
-            inputs=[prompt_input, thinking_mode, max_tokens, temperature, top_p],
-            outputs=response_output,
-        )
+        submit_btn.click(fn=chat, inputs=inputs, outputs=response_output)
+        prompt_input.submit(fn=chat, inputs=inputs, outputs=response_output)
 
         clear_btn.click(
             fn=lambda: ("", ""),
+            inputs=None,
             outputs=[prompt_input, response_output],
         )
 
@@ -175,7 +219,7 @@ def create_interface():
             ---
             **System Info:**
             - Device: {device.upper()}
-            - Model: {model_name}
+            - Model: {MODEL_NAME}
             - PyTorch: {torch.__version__}
             """
         )
@@ -183,13 +227,17 @@ def create_interface():
     return iface
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="SmolLM3-3B Gradio Interface")
     parser.add_argument("--port", type=int, default=7860, help="Port to run the server on")
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on")
     parser.add_argument("--share", action="store_true", help="Create a public link")
 
     args = parser.parse_args()
+
+    # Loaded after argument parsing so `--help` and bad arguments fail fast
+    # instead of downloading several gigabytes of weights first.
+    load_model()
 
     print(f"Starting Gradio interface on {args.host}:{args.port}")
 
@@ -200,3 +248,7 @@ if __name__ == "__main__":
         share=args.share,
         show_error=True,
     )
+
+
+if __name__ == "__main__":
+    main()
