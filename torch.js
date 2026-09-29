@@ -72,7 +72,9 @@ module.exports = {
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": "uv pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cpu --force-reinstall --no-deps"
+        // torch 2.2.x is the last Intel Mac build and was compiled against
+        // NumPy 1.x, so NumPy 2 (pulled in by requirements.txt) breaks it.
+        "message": "uv pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \"numpy<2\" --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --force-reinstall --no-deps"
       },
       "next": null
     },
