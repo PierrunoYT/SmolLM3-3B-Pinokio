@@ -28,6 +28,19 @@ def detect_device():
     return "cpu"
 
 
+def select_dtype(device):
+    """Pick the weight dtype for the given device.
+
+    SmolLM3 ships bf16 weights; casting them to fp16 can overflow activations
+    and produce NaN/garbage output, so bf16 is preferred wherever it is fast.
+    """
+    if device == "cuda":
+        return torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    if device == "mps":
+        return torch.float16
+    return torch.float32
+
+
 def load_model():
     """Load the tokenizer and model onto the best available device."""
     global tokenizer, model, device
@@ -42,7 +55,7 @@ def load_model():
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME,
-            torch_dtype=torch.float16 if device in {"cuda", "mps"} else torch.float32,
+            torch_dtype=select_dtype(device),
             # Only CUDA benefits from accelerate's sharding; mps/cpu are moved
             # explicitly below so the weights never get offloaded to disk.
             device_map="auto" if device == "cuda" else None,
