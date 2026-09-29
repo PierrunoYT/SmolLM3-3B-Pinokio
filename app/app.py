@@ -104,7 +104,7 @@ def format_prompt(prompt, enable_thinking=False):
     return f"User: {prompt}\nAssistant:", False
 
 
-def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0.95):
+def chat(prompt, enable_thinking=False, max_tokens=1024, temperature=0.6, top_p=0.95):
     """Generate a response using SmolLM3-3B."""
     if model is None or tokenizer is None:
         return "Model is not loaded yet. Please restart the app."
@@ -185,12 +185,15 @@ def create_interface():
                     info="Enable reasoning traces",
                 )
 
+                # Thinking mode spends many tokens on the reasoning trace
+                # before answering, so the range must leave room for both.
                 max_tokens = gr.Slider(
-                    minimum=50,
-                    maximum=1000,
-                    value=256,
-                    step=50,
+                    minimum=64,
+                    maximum=8192,
+                    value=1024,
+                    step=64,
                     label="Max Tokens",
+                    info="Raise this when Extended Thinking Mode is on",
                 )
 
                 temperature = gr.Slider(
