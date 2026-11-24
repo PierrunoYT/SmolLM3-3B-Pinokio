@@ -2,6 +2,7 @@ module.exports = {
   version: "5.0",
   title: "SmolLM3-3B Chatbot",
   description: "A local AI chatbot powered by SmolLM3-3B with a Gradio web interface.",
+  icon: "icon.png",
   menu: async (kernel, info) => {
     let installed = info.exists("env")
     let running = {
