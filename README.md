@@ -9,7 +9,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 - **🤖 SmolLM3-3B Model**: Advanced 3B parameter language model from HuggingFace
 - **💬 Gradio Interface**: Clean, responsive web interface with soft theme
 - **🧠 Extended Thinking Mode**: Enable reasoning traces for complex queries
-- **⚡ GPU Acceleration**: Automatic CUDA detection with FP16 precision
+- **⚡ GPU Acceleration**: Automatic CUDA (BF16, FP16 fallback) and Apple MPS (FP16) detection
 - **🔒 Complete Privacy**: Runs entirely offline, no data sent externally
 - **🌐 Cross-Platform**: Windows, macOS, and Linux support
 - **⚙️ Customizable**: Adjustable temperature (0.1-2.0), top-p (0.1-1.0), and max tokens (50-1000)
@@ -54,6 +54,42 @@ The Python application supports several command-line arguments:
 - `--host`: Host to run the server on (default: 127.0.0.1)
 - `--share`: Create a public Gradio link for sharing
 
+## 🔌 API
+
+The running app exposes its generation function as the Gradio endpoint `/chat`. Use the URL shown by "Open Web UI" (e.g. `http://127.0.0.1:7860`).
+
+Inputs, in order: `prompt` (str), `enable_thinking` (bool), `max_tokens` (int), `temperature` (float), `top_p` (float). Output: the response text.
+
+**Python** (`pip install gradio_client`)
+
+```python
+from gradio_client import Client
+
+client = Client("http://127.0.0.1:7860/")
+print(client.predict("Explain recursion briefly.", False, 256, 0.6, 0.95, api_name="/chat"))
+```
+
+**JavaScript** (`npm install @gradio/client`)
+
+```javascript
+import { Client } from "@gradio/client";
+
+const client = await Client.connect("http://127.0.0.1:7860/");
+const result = await client.predict("/chat", ["Explain recursion briefly.", false, 256, 0.6, 0.95]);
+console.log(result.data[0]);
+```
+
+**curl**
+
+```bash
+EVENT_ID=$(curl -s -X POST http://127.0.0.1:7860/gradio_api/call/chat \
+  -H "Content-Type: application/json" \
+  -d '{"data": ["Explain recursion briefly.", false, 256, 0.6, 0.95]}' | sed 's/.*"event_id": *"\([^"]*\)".*/\1/')
+curl -s -N http://127.0.0.1:7860/gradio_api/call/chat/$EVENT_ID
+```
+
+On Gradio 4.x the curl prefix is `/call/chat` instead of `/gradio_api/call/chat`.
+
 ## 🏗️ Project Structure
 
 ```
@@ -78,11 +114,11 @@ SmolLM3-3B/
 - **Parameters**: 3 billion
 - **Context Length**: Up to 64K tokens
 - **License**: Apache 2.0
-- **Precision**: FP16 on GPU, FP32 on CPU
+- **Precision**: BF16 on CUDA GPUs that support it (FP16 otherwise), FP16 on Apple MPS, FP32 on CPU
 
 ### Dependencies
 All Python dependencies are specified in `requirements.txt`:
-- **Transformers** (≥4.53.0) for model loading and inference (SmolLM3 support)
+- **Transformers** (≥4.56, <5) for model loading and inference (SmolLM3 support). Capped below 5.x because Transformers 5 disables PyTorch older than its minimum (2.6 as of 5.20), and `torch.js` installs torch 2.2.2 on Intel Macs and 2.4.1 on AMD Windows
 - **Gradio** (≥4.0.0) for the web interface
 - **Accelerate, Tokenizers, SafeTensors** for optimized model handling
 - **SentencePiece, Protobuf** for text processing

@@ -3,7 +3,10 @@
 # so torch is intentionally not pinned here.
 
 # Core ML dependencies
-transformers>=4.53.0
+# torch.js installs torch 2.2.2 on Intel Macs and torch 2.4.1 (torch-directml)
+# on AMD Windows. Transformers 5.x silently disables PyTorch below its floor
+# (2.6 as of 5.20), so stay on 4.x, which supports torch>=2.2.
+transformers>=4.56.0,<5
 accelerate
 tokenizers
 safetensors

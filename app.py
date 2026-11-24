@@ -45,7 +45,14 @@ def load_model():
     try:
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-        model_kwargs = {"torch_dtype": torch.float16 if device != "cpu" else torch.float32}
+        if device == "cuda":
+            # SmolLM3 ships bf16 weights; fp16 only where bf16 is unsupported.
+            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+        elif device == "mps":
+            dtype = torch.float16
+        else:
+            dtype = torch.float32
+        model_kwargs = {"dtype": dtype}
         if device == "cuda":
             # accelerate shards the model across the available GPUs.
             model_kwargs["device_map"] = "auto"
@@ -205,7 +212,7 @@ def create_interface():
 
         inputs = [prompt_input, thinking_mode, max_tokens, temperature, top_p]
 
-        submit_btn.click(fn=chat, inputs=inputs, outputs=response_output)
+        submit_btn.click(fn=chat, inputs=inputs, outputs=response_output, api_name="chat")
         prompt_input.submit(fn=chat, inputs=inputs, outputs=response_output)
         clear_btn.click(
             fn=lambda: ("", ""),
