@@ -75,12 +75,16 @@ def load_model():
 
 
 def format_prompt(prompt, enable_thinking=False):
-    """Build chat prompt with tokenizer template when available."""
+    """Build chat prompt with tokenizer template when available.
+
+    Returns (text, used_template); a templated string already carries BOS and
+    other special tokens, so the caller must not add them again.
+    """
     messages = [{"role": "user", "content": prompt}]
 
     if hasattr(tokenizer, "apply_chat_template") and getattr(tokenizer, "chat_template", None):
         try:
-            return tokenizer.apply_chat_template(
+            text = tokenizer.apply_chat_template(
                 messages,
                 tokenize=False,
                 add_generation_prompt=True,
@@ -88,16 +92,17 @@ def format_prompt(prompt, enable_thinking=False):
             )
         except TypeError:
             # Older tokenizers do not accept the enable_thinking flag.
-            return tokenizer.apply_chat_template(
+            text = tokenizer.apply_chat_template(
                 messages,
                 tokenize=False,
                 add_generation_prompt=True,
             )
+        return text, True
 
-    return f"User: {prompt}\nAssistant:"
+    return f"User: {prompt}\nAssistant:", False
 
 
-def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0.95):
+def chat(prompt, enable_thinking=False, max_tokens=1024, temperature=0.6, top_p=0.95):
     """Generate a response using SmolLM3-3B."""
     if model is None or tokenizer is None:
         return "Model is not loaded yet. Please restart the application."
@@ -106,9 +111,13 @@ def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0
         return "Please enter a prompt."
 
     try:
-        text = format_prompt(prompt, enable_thinking=enable_thinking)
+        text, used_template = format_prompt(prompt, enable_thinking=enable_thinking)
 
-        model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+        model_inputs = tokenizer(
+            [text],
+            return_tensors="pt",
+            add_special_tokens=not used_template,
+        ).to(model.device)
 
         temperature = float(temperature)
         generation_kwargs = {
@@ -133,6 +142,9 @@ def chat(prompt, enable_thinking=False, max_tokens=256, temperature=0.6, top_p=0
 
         output_ids = generated_ids[0][model_inputs.input_ids.shape[-1]:]
         return tokenizer.decode(output_ids, skip_special_tokens=True).strip()
+    except torch.cuda.OutOfMemoryError:
+        torch.cuda.empty_cache()
+        return "Out of GPU memory. Try lowering Max Tokens or restarting the app."
     except Exception as exc:  # noqa: BLE001 - surface generation errors in the UI
         traceback.print_exc()
         return f"Error generating response: {exc}"
@@ -179,12 +191,15 @@ def create_interface():
                     info="Enable reasoning traces",
                 )
 
+                # Thinking mode spends many tokens on the reasoning trace
+                # before answering, so the range must leave room for both.
                 max_tokens = gr.Slider(
-                    minimum=50,
-                    maximum=1000,
-                    value=256,
-                    step=50,
+                    minimum=64,
+                    maximum=8192,
+                    value=1024,
+                    step=64,
                     label="Max Tokens",
+                    info="Raise this when Extended Thinking Mode is on",
                 )
 
                 temperature = gr.Slider(

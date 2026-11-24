@@ -7,7 +7,7 @@ module.exports = {
         venv: "env",
         env: { },
         message: [
-          "python app.py --port {{port}}"
+          "python app.py --port {{port}} --host 127.0.0.1"
         ],
         on: [{
           // Capture the local URL Gradio prints once the server is up

@@ -12,7 +12,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
 - **⚡ GPU Acceleration**: Automatic CUDA (BF16, FP16 fallback) and Apple MPS (FP16) detection
 - **🔒 Complete Privacy**: Runs entirely offline, no data sent externally
 - **🌐 Cross-Platform**: Windows, macOS, and Linux support
-- **⚙️ Customizable**: Adjustable temperature (0.1-2.0), top-p (0.1-1.0), and max tokens (50-1000)
+- **⚙️ Customizable**: Adjustable temperature (0.1-2.0), top-p (0.1-1.0), and max tokens (64-8192)
 - **🖥️ Command Line Support**: Configurable host, port, and sharing options
 
 ## 📋 Requirements
@@ -44,7 +44,7 @@ A complete Pinokio installation package for running SmolLM3-3B locally with a be
    - Toggle "🧠 Extended Thinking Mode" for reasoning traces
    - Adjust temperature (0.1-2.0) for response creativity
    - Modify top-p (0.1-1.0) for response diversity
-   - Set max tokens (50-1000) for response length
+   - Set max tokens (64-8192) for response length
    - Use "Clear" button to empty the message and response boxes (each message is answered independently; there is no chat history)
 
 ### Command Line Options

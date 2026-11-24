@@ -1,4 +1,7 @@
 module.exports = {
+  requires: {
+    bundle: "ai"
+  },
   run: [
     // Install the platform specific pytorch build first so that
     // requirements.txt (accelerate depends on torch) reuses it instead of
